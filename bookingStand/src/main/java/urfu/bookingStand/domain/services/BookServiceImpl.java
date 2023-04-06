@@ -1,5 +1,6 @@
 package urfu.bookingStand.domain.services;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import urfu.bookingStand.database.entities.Book;
@@ -17,6 +18,9 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
 
     @Autowired
+    private ModelMapper modelMapper;
+
+    @Autowired
     public BookServiceImpl(BookRepository bookRepository) {
 
         this.bookRepository = bookRepository;
@@ -31,7 +35,7 @@ public class BookServiceImpl implements BookService {
     public List<BookModel> getAllBooks() {
         var books = bookRepository.findAll();
         return StreamSupport.stream(books.spliterator(), false)
-                .map(b -> new BookModel(b.getName(), b.getAuthor()))
+                .map(b -> modelMapper.map(b, BookModel.class))
                 .collect(Collectors.toList());
     }
 }

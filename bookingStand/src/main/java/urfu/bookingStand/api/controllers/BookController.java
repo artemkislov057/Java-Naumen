@@ -1,5 +1,6 @@
 package urfu.bookingStand.api.controllers;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,9 @@ public class BookController {
     private final BookService bookService;
 
     @Autowired
+    private ModelMapper modelMapper;
+
+    @Autowired
     public BookController(BookService bookService) {
         this.bookService = bookService;
     }
@@ -26,14 +30,14 @@ public class BookController {
     @ResponseBody
     public List<BookDto> getAllBooks() {
         return bookService.getAllBooks().stream()
-                .map(b -> new BookDto(b.getName(), b.getAuthor()))
+                .map(b -> modelMapper.map(b, BookDto.class))
                 .collect(Collectors.toList());
     }
 
     @PostMapping("api/books")
     @ResponseBody
     public BookDto createBook(@RequestBody BookDto requestBody) {
-        bookService.createBook(requestBody.name(), requestBody.author());
+        bookService.createBook(requestBody.getName(), requestBody.getAuthor());
         return requestBody;
     }
 
