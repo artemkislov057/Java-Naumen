@@ -1,8 +1,15 @@
 package urfu.bookingStand.api.dto.user;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class RegisterUserDto {
+    @NotBlank
     private String name;
+
+    @NotBlank
     private String login;
+
+    @NotBlank
     private String password;
 
     public String getName() {

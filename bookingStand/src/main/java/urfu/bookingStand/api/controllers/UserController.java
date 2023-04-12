@@ -1,6 +1,7 @@
 package urfu.bookingStand.api.controllers;
 
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,7 +26,7 @@ public class UserController {
 
     @PostMapping("api/users")
     @ResponseBody
-    public void RegisterUser(@RequestBody RegisterUserDto body, HttpServletResponse response) throws ObjectRecreationException {
+    public void RegisterUser(@Valid @RequestBody RegisterUserDto body, HttpServletResponse response) throws ObjectRecreationException {
         var request = modelMapper.map(body, RegisterUserRequest.class);
         userService.RegisterUser(request);
     }
