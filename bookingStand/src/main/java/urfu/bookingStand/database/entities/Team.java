@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "teams")
+@Table(name = "team")
 public class Team {
     @Id
     @GeneratedValue

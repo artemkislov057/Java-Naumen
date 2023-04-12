@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "booking_users")
+@Table(name = "booking_user")
 public class User {
     @Id
     @GeneratedValue
