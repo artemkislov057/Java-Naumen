@@ -12,6 +12,7 @@ import urfu.bookingStand.database.enums.Role;
 import urfu.bookingStand.database.repositories.UserRepository;
 import urfu.bookingStand.domain.abstractions.UserService;
 import urfu.bookingStand.domain.exceptions.ObjectRecreationException;
+import urfu.bookingStand.domain.models.BookingUserDetails;
 import urfu.bookingStand.domain.requests.RegisterUserRequest;
 
 import java.text.MessageFormat;
@@ -51,7 +52,8 @@ public class UserServiceImpl implements UserService {
             throw new UsernameNotFoundException(MessageFormat.format("Пользователь {0} не найден!", username));
         }
 
-        return new org.springframework.security.core.userdetails.User(
+        return new BookingUserDetails(
+                userFromDatabase.getId(),
                 userFromDatabase.getShortname(),
                 userFromDatabase.getPassword(),
                 mapRolesToAuthorities(userFromDatabase.getRoles())
