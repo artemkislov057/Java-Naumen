@@ -1,12 +1,11 @@
 package urfu.bookingStand.api.controllers;
 
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import urfu.bookingStand.api.dto.user.RegisterUserDto;
 import urfu.bookingStand.domain.abstractions.UserService;
@@ -26,8 +25,13 @@ public class UserController {
 
     @PostMapping("api/users")
     @ResponseBody
-    public void RegisterUser(@Valid @RequestBody RegisterUserDto body, HttpServletResponse response) throws ObjectRecreationException {
+    public void RegisterUser(@Valid RegisterUserDto body) throws ObjectRecreationException {
         var request = modelMapper.map(body, RegisterUserRequest.class);
         userService.RegisterUser(request);
+    }
+
+    @GetMapping("registration")
+    public String RegisterView() {
+        return "registration";
     }
 }
