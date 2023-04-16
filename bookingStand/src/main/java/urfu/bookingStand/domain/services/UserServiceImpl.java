@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
         }
 
         return new org.springframework.security.core.userdetails.User(
-                userFromDatabase.getName(),
+                userFromDatabase.getShortname(),
                 userFromDatabase.getPassword(),
                 mapRolesToAuthorities(userFromDatabase.getRoles())
         );
