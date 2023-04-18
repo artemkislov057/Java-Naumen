@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import urfu.bookingStand.api.dto.stand.AddStandDto;
 import urfu.bookingStand.domain.abstractions.StandService;
+import urfu.bookingStand.domain.exceptions.NoAccessException;
 import urfu.bookingStand.domain.models.BookingUserDetails;
 import urfu.bookingStand.domain.requests.AddStandRequest;
 
@@ -29,7 +30,7 @@ public class StandController {
 
     @PostMapping("api/teams/{teamId}/stands")
     @ResponseBody
-    public void AddStand(@RequestBody AddStandDto body, @PathVariable UUID teamId, Authentication authentication) {
+    public void AddStand(@RequestBody AddStandDto body, @PathVariable UUID teamId, Authentication authentication) throws NoAccessException {
         var user = (BookingUserDetails) authentication.getPrincipal();
         var request = modelMapper.map(body, AddStandRequest.class);
         standService.AddStand(request, teamId, user.getId());
