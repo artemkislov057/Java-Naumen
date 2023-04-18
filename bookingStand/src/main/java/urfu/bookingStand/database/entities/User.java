@@ -10,7 +10,7 @@ import java.util.UUID;
 @Table(name = "booking_user")
 public class User {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(nullable = false)
