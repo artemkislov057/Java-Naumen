@@ -2,6 +2,7 @@ package urfu.bookingStand.database.entities;
 
 import jakarta.persistence.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -15,6 +16,9 @@ public class Team {
     private String name;
 
     private String description;
+
+    @OneToMany(targetEntity = Stand.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Stand> stands;
 
     public UUID getId() {
         return id;
@@ -38,5 +42,13 @@ public class Team {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<Stand> getStands() {
+        return stands;
+    }
+
+    public void setStands(List<Stand> stands) {
+        this.stands = stands;
     }
 }

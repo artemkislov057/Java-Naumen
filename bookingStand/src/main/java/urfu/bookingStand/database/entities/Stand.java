@@ -16,6 +16,10 @@ public class Stand {
 
     private String description;
 
+    @ManyToOne(targetEntity = Team.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id")
+    private Team team;
+
     public UUID getId() {
         return id;
     }
@@ -38,5 +42,13 @@ public class Stand {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
     }
 }
