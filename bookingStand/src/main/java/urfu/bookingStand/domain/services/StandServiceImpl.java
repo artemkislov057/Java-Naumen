@@ -69,7 +69,7 @@ public class StandServiceImpl implements StandService {
         booking.setUserId(userId);
         booking.setStandId(standId);
         booking.setUser(user.get());
-        booking.setStartTime(new Date());
+        booking.setStartTime(new Date()); //откуда брать дату? :)
         booking.setEndTime(new Date());
 
         bookingRepository.save(booking);
