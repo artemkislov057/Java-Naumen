@@ -60,8 +60,8 @@ public class StandServiceImpl implements StandService {
 
 
         if (team.isEmpty() || stand.isEmpty()) {
-            throw new NoAccessException(MessageFormat.format("User with id {0} has no access to booking stand{1}," +
-                    " because he isn't included on the team having access.", userId, standId));
+            throw new NoAccessException(MessageFormat.format("User {0} has no access to booking stand{1}," +
+                    " because he isn't included on the team having access.", user.get().getName(), standId));
         }
 
         var booking = modelMapper.map(request, Booking.class);
