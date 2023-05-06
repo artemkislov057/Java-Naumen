@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import urfu.bookingStand.api.dto.stand.AddStandDto;
 import urfu.bookingStand.domain.abstractions.StandService;
 import urfu.bookingStand.domain.exceptions.NoAccessException;
+import urfu.bookingStand.domain.exceptions.NoUserException;
 import urfu.bookingStand.domain.models.BookingUserDetails;
 import urfu.bookingStand.domain.requests.AddStandRequest;
+import urfu.bookingStand.domain.requests.BookStandRequest;
 
 import java.util.UUID;
 
@@ -34,5 +36,13 @@ public class StandController {
         var user = (BookingUserDetails) authentication.getPrincipal();
         var request = modelMapper.map(body, AddStandRequest.class);
         standService.AddStand(request, teamId, user.getId());
+    }
+
+    @PostMapping("api/stands/{standId}/book")
+    @ResponseBody
+    public void BookStand(@RequestBody BookStandRequest body, @PathVariable UUID standId, Authentication authentication) throws NoAccessException, NoUserException {
+        var user = (BookingUserDetails) authentication.getPrincipal();
+        var request = modelMapper.map(body, BookStandRequest.class);
+        standService.BookStand(request, standId, user.getId());
     }
 }
