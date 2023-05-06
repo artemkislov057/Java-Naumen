@@ -8,4 +8,5 @@ import java.util.UUID;
 
 public interface UserTeamAccessRepository extends CrudRepository<UserTeamAccess, Long> {
     boolean existsByUserIdAndTeamId(UUID userId, UUID teamId);
+    Optional<UserTeamAccess> findByUserId(UUID userId);
 }
