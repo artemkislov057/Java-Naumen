@@ -8,13 +8,13 @@ import urfu.bookingStand.database.entities.Stand;
 import urfu.bookingStand.database.repositories.*;
 import urfu.bookingStand.domain.abstractions.StandService;
 import urfu.bookingStand.domain.exceptions.NoAccessException;
-import urfu.bookingStand.domain.exceptions.NoUserException;
+import urfu.bookingStand.domain.exceptions.NotSuchTimeException;
+import urfu.bookingStand.domain.exceptions.UserNotFoundException;
 import urfu.bookingStand.domain.requests.AddStandRequest;
 import urfu.bookingStand.domain.requests.BookStandRequest;
 
 import java.text.MessageFormat;
 import java.util.Date;
-import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Component
@@ -29,7 +29,11 @@ public class StandServiceImpl implements StandService {
     private ModelMapper modelMapper;
 
     @Autowired
-    public StandServiceImpl(StandRepository standRepository, BookingRepository bookingRepository, UserRepository userRepository, UserTeamAccessRepository userTeamAccessRepository, TeamRepository teamRepository) {
+    public StandServiceImpl(StandRepository standRepository,
+                            BookingRepository bookingRepository,
+                            UserRepository userRepository,
+                            UserTeamAccessRepository userTeamAccessRepository,
+                            TeamRepository teamRepository) {
         this.standRepository = standRepository;
         this.bookingRepository = bookingRepository;
         this.userRepository = userRepository;
@@ -50,27 +54,44 @@ public class StandServiceImpl implements StandService {
     }
 
     @Override
-    public void BookStand(BookStandRequest request, UUID standId, UUID userId) throws NoAccessException, NoUserException {
+    public void BookStand(BookStandRequest request, UUID standId, UUID userId) throws NoAccessException,
+            UserNotFoundException,
+            NotSuchTimeException {
         var stand = standRepository.findById(standId);
-        var team = userTeamAccessRepository.findByUserId(userId);
         var user = userRepository.findById(userId);
 
+        var startTime = request.getStartTime();
+        var endTime = request.getEndTime();
+
         if (user.isEmpty())
-            throw new NoUserException(MessageFormat.format("User with id {0} doesn't exist.", userId));
+            throw new UserNotFoundException(MessageFormat.format("User with id {0} doesn't exist.", userId));
 
+        if (stand.isPresent()){
+            var teamID = stand.get().getTeam().getId();
 
-        if (team.isEmpty() || stand.isEmpty()) {
-            throw new NoAccessException(MessageFormat.format("User {0} has no access to booking stand{1}," +
-                    " because he isn't included on the team having access.", user.get().getName(), standId));
+            if (!userTeamAccessRepository.existsByUserIdAndTeamId(userId, teamID)) {
+                throw new NoAccessException(MessageFormat.format("User {0} has no access to booking stand{1}," +
+                        " because he isn't included on the team having access.", user.get().getName(), standId));
+            }
         }
 
-        var booking = modelMapper.map(request, Booking.class);
+        if (startTime.after(endTime))
+            throw new NotSuchTimeException(MessageFormat.format("Дата начала брони: {0} идет после даты окончания {1}.",
+                    startTime, endTime));
+
+        if (!bookingRepository.existsBookingByStartTimeAfterOrIdEquals(endTime) &&
+                !bookingRepository.existsBookingByEndTimeBeforeOrIdEquals(startTime)){
+            throw new NotSuchTimeException(MessageFormat.format("Пересечение дат: в промежутке между {0} и {1} есть бронь.",
+                    startTime, endTime));
+        }
+
+        var booking = new Booking();
 
         booking.setUserId(userId);
         booking.setStandId(standId);
         booking.setUser(user.get());
-        booking.setStartTime(new Date()); //откуда брать дату? :)
-        booking.setEndTime(new Date());
+        booking.setStartTime(startTime);
+        booking.setEndTime(endTime);
 
         bookingRepository.save(booking);
     }

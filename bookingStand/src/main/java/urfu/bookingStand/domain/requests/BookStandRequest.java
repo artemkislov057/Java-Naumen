@@ -1,22 +1,27 @@
 package urfu.bookingStand.domain.requests;
 
+import jakarta.validation.constraints.NotBlank;
+
+import java.util.Date;
+
 public class BookStandRequest {
-    private String name;
-    private String description;
+    private Date startTime;
 
-    public String getName() {
-        return name;
+    private Date endTime;
+
+    public Date getStartTime() {
+        return startTime;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
     }
 
-    public String getDescription() {
-        return description;
+    public Date getEndTime() {
+        return endTime;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
     }
 }
