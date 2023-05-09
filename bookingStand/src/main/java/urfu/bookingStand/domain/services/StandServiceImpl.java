@@ -80,8 +80,8 @@ public class StandServiceImpl implements StandService {
             throw new NotSuchTimeException(MessageFormat.format("Дата начала брони: {0} идет после даты окончания {1}.",
                     startTime, endTime));
 
-        if (!bookingRepository.existsBookingByStartTimeAfter(endTime) &&
-                !bookingRepository.existsBookingByEndTimeBefore(startTime)){
+        if (bookingRepository.existsByStartTimeBetween(startTime, endTime) ||
+                bookingRepository.existsByEndTimeBetween(startTime, endTime)){
             throw new NotSuchTimeException(MessageFormat.format("Пересечение дат: в промежутке между {0} и {1} есть бронь.",
                     startTime, endTime));
         }
