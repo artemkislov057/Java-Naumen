@@ -5,10 +5,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import urfu.bookingStand.domain.exceptions.NoAccessException;
-import urfu.bookingStand.domain.exceptions.NotSuchTimeException;
-import urfu.bookingStand.domain.exceptions.ObjectRecreationException;
-import urfu.bookingStand.domain.exceptions.UserNotFoundException;
+import urfu.bookingStand.domain.exceptions.*;
 
 @ControllerAdvice
 public class ExceptionsHandler {
@@ -25,6 +22,14 @@ public class ExceptionsHandler {
     public String handleNoAccess(NoAccessException exception) {
         return exception.getMessage();
     }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseBody
+    @ExceptionHandler(StandNotFoundException.class)
+    public String handleStandNotFound(StandNotFoundException exception) {
+        return exception.getMessage();
+    }
+
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody

@@ -9,6 +9,7 @@ import urfu.bookingStand.database.repositories.*;
 import urfu.bookingStand.domain.abstractions.StandService;
 import urfu.bookingStand.domain.exceptions.NoAccessException;
 import urfu.bookingStand.domain.exceptions.NotSuchTimeException;
+import urfu.bookingStand.domain.exceptions.StandNotFoundException;
 import urfu.bookingStand.domain.exceptions.UserNotFoundException;
 import urfu.bookingStand.domain.requests.AddStandRequest;
 import urfu.bookingStand.domain.requests.BookStandRequest;
@@ -56,7 +57,7 @@ public class StandServiceImpl implements StandService {
     @Override
     public void BookStand(BookStandRequest request, UUID standId, UUID userId) throws NoAccessException,
             UserNotFoundException,
-            NotSuchTimeException {
+            NotSuchTimeException, StandNotFoundException {
         var stand = standRepository.findById(standId);
         var user = userRepository.findById(userId);
 
@@ -66,21 +67,21 @@ public class StandServiceImpl implements StandService {
         if (user.isEmpty())
             throw new UserNotFoundException(MessageFormat.format("User with id {0} doesn't exist.", userId));
 
-        if (stand.isPresent()){
-            var teamID = stand.get().getTeam().getId();
+        if (stand.isEmpty())
+            throw new StandNotFoundException(MessageFormat.format("Stand with ID: {0} not founded.",
+                    standId));
 
-            if (!userTeamAccessRepository.existsByUserIdAndTeamId(userId, teamID)) {
-                throw new NoAccessException(MessageFormat.format("User {0} has no access to booking stand{1}," +
-                        " because he isn't included on the team having access.", user.get().getName(), standId));
-            }
-        }
+        var teamID = stand.get().getTeam().getId();
+        if (!userTeamAccessRepository.existsByUserIdAndTeamId(userId, teamID))
+            throw new NoAccessException(MessageFormat.format("User {0} has no access to booking stand{1}," +
+                    " because he isn't included on the team having access.", user.get().getName(), standId));
 
-        if (startTime.after(endTime))
+        if (startTime.isAfter(endTime))
             throw new NotSuchTimeException(MessageFormat.format("Дата начала брони: {0} идет после даты окончания {1}.",
                     startTime, endTime));
 
-        if (!bookingRepository.existsBookingByStartTimeAfterOrIdEquals(endTime) &&
-                !bookingRepository.existsBookingByEndTimeBeforeOrIdEquals(startTime)){
+        if (!bookingRepository.existsBookingByStartTimeAfter(endTime) &&
+                !bookingRepository.existsBookingByEndTimeBefore(startTime)){
             throw new NotSuchTimeException(MessageFormat.format("Пересечение дат: в промежутке между {0} и {1} есть бронь.",
                     startTime, endTime));
         }

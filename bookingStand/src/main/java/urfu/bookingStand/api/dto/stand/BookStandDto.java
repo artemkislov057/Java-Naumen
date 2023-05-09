@@ -1,28 +1,31 @@
 package urfu.bookingStand.api.dto.stand;
 
 import jakarta.validation.constraints.NotBlank;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class BookStandDto {
     @NotBlank
-    private Date StartTime;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime StartTime;
     @NotBlank
-    private Date EndTime;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime EndTime;
 
-    public Date getStartTime() {
+    public LocalDateTime getStartTime() {
         return StartTime;
     }
 
-    public void setStartTime(Date startTime) {
+    public void setStartTime(LocalDateTime startTime) {
         StartTime = startTime;
     }
 
-    public Date getEndTime() {
+    public LocalDateTime getEndTime() {
         return EndTime;
     }
 
-    public void setEndTime(Date endTime) {
+    public void setEndTime(LocalDateTime endTime) {
         EndTime = endTime;
     }
 }
