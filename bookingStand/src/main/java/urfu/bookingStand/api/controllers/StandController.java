@@ -12,6 +12,7 @@ import urfu.bookingStand.api.dto.stand.AddStandDto;
 import urfu.bookingStand.api.dto.stand.BookStandDto;
 import urfu.bookingStand.domain.abstractions.StandService;
 import urfu.bookingStand.domain.exceptions.NoAccessException;
+import urfu.bookingStand.domain.exceptions.NotSuchTimeException;
 import urfu.bookingStand.domain.exceptions.UserNotFoundException;
 import urfu.bookingStand.domain.models.BookingUserDetails;
 import urfu.bookingStand.domain.requests.AddStandRequest;
@@ -41,7 +42,7 @@ public class StandController {
 
     @PostMapping("api/stands/{standId}/book")
     @ResponseBody
-    public void BookStand(@RequestBody BookStandDto body, @PathVariable UUID standId, Authentication authentication) throws NoAccessException, UserNotFoundException {
+    public void BookStand(@RequestBody BookStandDto body, @PathVariable UUID standId, Authentication authentication) throws NoAccessException, UserNotFoundException, NotSuchTimeException {
         var user = (BookingUserDetails) authentication.getPrincipal();
         var request = modelMapper.map(body, BookStandRequest.class);
         standService.BookStand(request, standId, user.getId());
