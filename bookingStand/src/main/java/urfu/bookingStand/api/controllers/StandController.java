@@ -4,17 +4,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import urfu.bookingStand.api.dto.stand.AddStandDto;
 import urfu.bookingStand.api.dto.stand.BookStandDto;
 import urfu.bookingStand.domain.abstractions.StandService;
-import urfu.bookingStand.domain.exceptions.NoAccessException;
-import urfu.bookingStand.domain.exceptions.NotSuchTimeException;
-import urfu.bookingStand.domain.exceptions.StandNotFoundException;
-import urfu.bookingStand.domain.exceptions.UserNotFoundException;
+import urfu.bookingStand.domain.exceptions.*;
 import urfu.bookingStand.domain.models.BookingUserDetails;
 import urfu.bookingStand.domain.requests.AddStandRequest;
 import urfu.bookingStand.domain.requests.BookStandRequest;
@@ -51,5 +45,15 @@ public class StandController {
         var user = (BookingUserDetails) authentication.getPrincipal();
         var request = modelMapper.map(body, BookStandRequest.class);
         standService.BookStand(request, standId, user.getId());
+    }
+
+    @DeleteMapping("api/stands/{standId}/bookings/{bookingId}")
+    @ResponseBody
+    public void DeleteBookStand(@PathVariable UUID standId, @PathVariable long bookingId, Authentication authentication)
+            throws NoAccessException,
+            UserNotFoundException,
+            StandNotFoundException, BookingNotFoundException {
+        var user = (BookingUserDetails) authentication.getPrincipal();
+        standService.DeleteBookStand(standId, bookingId, user.getId());
     }
 }

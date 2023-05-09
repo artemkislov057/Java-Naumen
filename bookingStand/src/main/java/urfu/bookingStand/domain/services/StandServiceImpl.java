@@ -7,10 +7,7 @@ import urfu.bookingStand.database.entities.Booking;
 import urfu.bookingStand.database.entities.Stand;
 import urfu.bookingStand.database.repositories.*;
 import urfu.bookingStand.domain.abstractions.StandService;
-import urfu.bookingStand.domain.exceptions.NoAccessException;
-import urfu.bookingStand.domain.exceptions.NotSuchTimeException;
-import urfu.bookingStand.domain.exceptions.StandNotFoundException;
-import urfu.bookingStand.domain.exceptions.UserNotFoundException;
+import urfu.bookingStand.domain.exceptions.*;
 import urfu.bookingStand.domain.requests.AddStandRequest;
 import urfu.bookingStand.domain.requests.BookStandRequest;
 
@@ -95,5 +92,31 @@ public class StandServiceImpl implements StandService {
         booking.setEndTime(endTime);
 
         bookingRepository.save(booking);
+    }
+
+    @Override
+    public void DeleteBookStand(UUID standId, long bookingId, UUID userId)
+            throws StandNotFoundException, NoAccessException, BookingNotFoundException {
+        var stand = standRepository.findById(standId);
+
+        var user = userRepository.findById(userId);
+
+        if (stand.isEmpty())
+            throw new StandNotFoundException(MessageFormat.format("Stand with ID: {0} not founded.",
+                    standId));
+
+        var teamID = stand.get().getTeam().getId();
+
+        if (user.isEmpty() || !userTeamAccessRepository.existsByUserIdAndTeamId(userId, teamID))
+            throw new NoAccessException(MessageFormat.format("User {0} has no access to booking stand{1}," +
+                    " because he isn't included on the team having access.", user.get().getName(), standId));
+
+        var booking = bookingRepository.findById(bookingId);
+        if (booking.isEmpty()){
+            throw new BookingNotFoundException(MessageFormat.format("Booking with id {0} not founded." +
+                    " because he isn't included on the team having access.", bookingId));
+        }
+        booking.get().setUser(null);
+        bookingRepository.delete(booking.get());
     }
 }

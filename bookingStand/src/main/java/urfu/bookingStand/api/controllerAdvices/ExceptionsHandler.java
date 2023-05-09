@@ -30,6 +30,12 @@ public class ExceptionsHandler {
         return exception.getMessage();
     }
 
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseBody
+    @ExceptionHandler(BookingNotFoundException.class)
+    public String handleBookingNotFound(BookingNotFoundException exception) {
+        return exception.getMessage();
+    }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
