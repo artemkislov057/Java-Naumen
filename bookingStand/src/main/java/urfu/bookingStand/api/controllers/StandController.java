@@ -2,6 +2,7 @@ package urfu.bookingStand.api.controllers;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +14,9 @@ import urfu.bookingStand.domain.exceptions.*;
 import urfu.bookingStand.domain.models.BookingUserDetails;
 import urfu.bookingStand.domain.requests.AddStandRequest;
 import urfu.bookingStand.domain.requests.BookStandRequest;
+import urfu.bookingStand.domain.responses.StandEmploymentResponse;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -64,4 +67,13 @@ public class StandController {
     public List<StandByTeamIdDto> getStandByTeamId(@PathVariable UUID teamId) throws TeamNotFoundException {
         return standService.getStandByTeamId(teamId);
     }
+
+    @GetMapping("/api/stands/{standId}/bookings")
+    @ResponseBody
+    public List<StandEmploymentResponse> getStandEmploymentByTimePeriod(@PathVariable UUID standId,
+                                                                        @RequestParam("from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
+                                                                        @RequestParam("to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to) throws StandNotFoundException {
+       return standService.getStandEmploymentByTimePeriod(standId, from, to);
+    }
+
 }
