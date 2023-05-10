@@ -46,6 +46,13 @@ public class ExceptionsHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
+    @ExceptionHandler(TeamNotFoundException.class)
+    public String handleTeamNotFound(TeamNotFoundException exception) {
+        return exception.getMessage();
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
     @ExceptionHandler(NotSuchTimeException.class)
     public String handleNotSuchTime(NotSuchTimeException exception) {
         return exception.getMessage();
