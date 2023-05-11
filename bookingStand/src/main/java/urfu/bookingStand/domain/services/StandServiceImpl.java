@@ -149,21 +149,11 @@ public class StandServiceImpl implements StandService {
         if (stand.isEmpty())
             throw new StandNotFoundException(MessageFormat.format("Stand with id {0} doesn't exist.", standId));
 
-        var bookingsByStartTime = bookingRepository.findAllByStartTimeBetween(from, to);
-        var bookingsByEndTime = bookingRepository.findAllByEndTimeBetween(from, to);
-
-        var bookings = new HashSet<Booking>((Collection) bookingsByStartTime);
-        bookings.addAll((Collection) bookingsByEndTime);
-
+        var bookings = bookingRepository.findAllBookingsBetween(from, to);
         var standsResponses = new ArrayList<StandEmploymentResponse>();
-        var standTypeResponse = modelMapper.addMappings(new PropertyMap<Booking, StandEmploymentResponse>() {
-            protected void configure() {
-                map().getUser().setUserId(source.getUser().getId());
-            }});
-
         for (var booking : bookings) {
 
-            var standResponse = standTypeResponse.map(booking);
+            var standResponse = modelMapper.map(booking, StandEmploymentResponse.class);
             standsResponses.add(standResponse);
         }
 
