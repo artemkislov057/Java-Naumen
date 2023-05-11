@@ -35,8 +35,9 @@ public class TeamServiceImpl implements TeamService {
     public void AddTeam(AddTeamRequest request, UUID userId) {
         var team = modelMapper.map(request, Team.class);
         teamRepository.save(team);
-        var userTeamAccess = modelMapper.map(userId, UserTeamAccess.class);
-        userTeamAccess.setTeam(team);
+        var userTeamAccess = new UserTeamAccess();
+        userTeamAccess.setUserId(userId);
+        userTeamAccess.setTeamId(team.getId());
         userTeamAccessRepository.save(userTeamAccess);
     }
 }
