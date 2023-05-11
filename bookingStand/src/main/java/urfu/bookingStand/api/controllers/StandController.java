@@ -14,6 +14,7 @@ import urfu.bookingStand.domain.models.BookingUserDetails;
 import urfu.bookingStand.domain.requests.AddStandRequest;
 import urfu.bookingStand.domain.requests.BookStandRequest;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -62,6 +63,13 @@ public class StandController {
     @GetMapping("api/teams/{teamId}/stands")
     @ResponseBody
     public List<StandByTeamIdDto> getStandByTeamId(@PathVariable UUID teamId) throws TeamNotFoundException {
-        return standService.getStandByTeamId(teamId);
+        var standsByTeamIdResponse = standService.getStandByTeamId(teamId);
+
+        var standsDto = new ArrayList<StandByTeamIdDto>();
+        for (var standResponse : standsByTeamIdResponse) {
+            var standByTeamIdDto = modelMapper.map(standResponse, StandByTeamIdDto.class);
+            standsDto.add(standByTeamIdDto);
+        }
+        return standsDto;
     }
 }
