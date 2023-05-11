@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import urfu.bookingStand.api.dto.stand.AddStandDto;
+import urfu.bookingStand.api.dto.team.AddTeamDto;
 import urfu.bookingStand.domain.abstractions.StandService;
 import urfu.bookingStand.domain.abstractions.TeamService;
 import urfu.bookingStand.domain.exceptions.NoAccessException;
@@ -32,7 +33,7 @@ public class TeamController {
 
     @PostMapping("api/teams")
     @ResponseBody
-    public void AddTeam(@RequestBody AddStandDto body, Authentication authentication) {
+    public void AddTeam(@RequestBody AddTeamDto body, Authentication authentication) {
         var request = modelMapper.map(body, AddTeamRequest.class);
         teamService.AddTeam(request);
     }
