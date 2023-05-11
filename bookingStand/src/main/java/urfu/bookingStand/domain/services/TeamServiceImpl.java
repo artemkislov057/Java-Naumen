@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import urfu.bookingStand.database.entities.Stand;
 import urfu.bookingStand.database.entities.Team;
+import urfu.bookingStand.database.entities.UserTeamAccess;
 import urfu.bookingStand.database.repositories.StandRepository;
 import urfu.bookingStand.database.repositories.TeamRepository;
 import urfu.bookingStand.database.repositories.UserRepository;
@@ -18,21 +19,24 @@ import java.util.UUID;
 
 @Component
 public class TeamServiceImpl implements TeamService {
+    private final UserTeamAccessRepository userTeamAccessRepository;
     private final TeamRepository teamRepository;
 
     @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
-    public TeamServiceImpl(TeamRepository teamRepository) {
+    public TeamServiceImpl(UserTeamAccessRepository userTeamAccessRepository, TeamRepository teamRepository) {
+        this.userTeamAccessRepository = userTeamAccessRepository;
         this.teamRepository = teamRepository;
     }
 
     @Override
-    public void AddTeam(AddTeamRequest request) {
+    public void AddTeam(AddTeamRequest request, UUID userId) {
         var team = modelMapper.map(request, Team.class);
-        team.setName(request.getName());
-        team.setDescription(request.getDescription());
         teamRepository.save(team);
+        var userTeamAccess = modelMapper.map(userId, UserTeamAccess.class);
+        userTeamAccess.setTeam(team);
+        userTeamAccessRepository.save(userTeamAccess);
     }
 }

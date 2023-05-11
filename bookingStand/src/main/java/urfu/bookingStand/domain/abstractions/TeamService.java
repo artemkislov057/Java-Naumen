@@ -6,5 +6,5 @@ import urfu.bookingStand.domain.requests.AddTeamRequest;
 import java.util.UUID;
 
 public interface TeamService {
-    void AddTeam(AddTeamRequest request);
+    void AddTeam(AddTeamRequest request, UUID userId);
 }

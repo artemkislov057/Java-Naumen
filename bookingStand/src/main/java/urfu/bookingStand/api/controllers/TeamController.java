@@ -33,8 +33,9 @@ public class TeamController {
 
     @PostMapping("api/teams")
     @ResponseBody
-    public void AddTeam(@RequestBody AddTeamDto body) {
+    public void AddTeam(@RequestBody AddTeamDto body, Authentication authentication) {
+        var user = (BookingUserDetails) authentication.getPrincipal();
         var request = modelMapper.map(body, AddTeamRequest.class);
-        teamService.AddTeam(request);
+        teamService.AddTeam(request, user.getId());
     }
 }
