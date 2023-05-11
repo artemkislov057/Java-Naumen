@@ -8,6 +8,6 @@ import java.util.UUID;
 
 public interface TeamService {
     void AddTeam(AddTeamRequest request, UUID userId);
-
+  
     List<TeamByUserIdDto> getTeamsByUserId(UUID userId);
 }

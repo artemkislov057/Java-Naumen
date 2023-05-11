@@ -26,7 +26,7 @@ public class UserController {
 
     @PostMapping("api/users")
     @ResponseBody
-    public void RegisterUser(@RequestBody RegisterUserDto body) throws ObjectRecreationException {
+    public void RegisterUser(@Valid RegisterUserDto body) throws ObjectRecreationException {
         var request = modelMapper.map(body, RegisterUserRequest.class);
         userService.RegisterUser(request);
     }
