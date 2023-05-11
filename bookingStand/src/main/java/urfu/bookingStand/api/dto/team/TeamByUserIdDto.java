@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 
 import java.util.UUID;
 
-public class TeamByDescriptionDto {
+public class TeamByUserIdDto {
     @Id
     @GeneratedValue
     private UUID Id;

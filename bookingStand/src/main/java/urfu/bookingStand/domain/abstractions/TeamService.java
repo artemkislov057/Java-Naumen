@@ -1,19 +1,13 @@
 package urfu.bookingStand.domain.abstractions;
 
-import urfu.bookingStand.api.dto.team.TeamByDescriptionDto;
-import urfu.bookingStand.api.dto.team.TeamByNameDto;
-import urfu.bookingStand.api.dto.team.TeamByTeamIdDto;
+import urfu.bookingStand.api.dto.team.TeamByUserIdDto;
 import urfu.bookingStand.domain.requests.AddTeamRequest;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface TeamService {
-    void AddTeam(AddTeamRequest request);
+    void AddTeam(AddTeamRequest request, UUID userId);
 
-    List<TeamByTeamIdDto> getTeamsByTeamId(UUID teamId);
-
-    List<TeamByNameDto> getTeamsByName(String name);
-
-    List<TeamByDescriptionDto> getTeamsByDescription(String description);
+    List<TeamByUserIdDto> getTeamsByUserId(UUID userId);
 }

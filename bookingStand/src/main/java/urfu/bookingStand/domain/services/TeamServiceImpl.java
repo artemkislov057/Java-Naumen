@@ -3,11 +3,11 @@ package urfu.bookingStand.domain.services;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import urfu.bookingStand.api.dto.team.TeamByDescriptionDto;
-import urfu.bookingStand.api.dto.team.TeamByNameDto;
-import urfu.bookingStand.api.dto.team.TeamByTeamIdDto;
+import urfu.bookingStand.api.dto.team.TeamByUserIdDto;
 import urfu.bookingStand.database.entities.Team;
+import urfu.bookingStand.database.entities.UserTeamAccess;
 import urfu.bookingStand.database.repositories.TeamRepository;
+import urfu.bookingStand.database.repositories.UserTeamAccessRepository;
 import urfu.bookingStand.domain.abstractions.TeamService;
 import urfu.bookingStand.domain.requests.AddTeamRequest;
 
@@ -17,60 +17,38 @@ import java.util.UUID;
 
 @Component
 public class TeamServiceImpl implements TeamService {
+    private final UserTeamAccessRepository userTeamAccessRepository;
     private final TeamRepository teamRepository;
 
     @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
-    public TeamServiceImpl(TeamRepository teamRepository) {
+    public TeamServiceImpl(UserTeamAccessRepository userTeamAccessRepository, TeamRepository teamRepository) {
+        this.userTeamAccessRepository = userTeamAccessRepository;
         this.teamRepository = teamRepository;
     }
 
     @Override
-    public void AddTeam(AddTeamRequest request) {
+    public void AddTeam(AddTeamRequest request, UUID userId) {
         var team = modelMapper.map(request, Team.class);
-        team.setName(request.getName());
-        team.setDescription(request.getDescription());
         teamRepository.save(team);
+        var userTeamAccess = new UserTeamAccess();
+        userTeamAccess.setUserId(userId);
+        userTeamAccess.setTeamId(team.getId());
+        userTeamAccessRepository.save(userTeamAccess);
     }
 
     @Override
-    public List<TeamByTeamIdDto> getTeamsByTeamId(UUID teamId) {
-        var teamsByTeamIdDto = new ArrayList<TeamByTeamIdDto>();
+    public List<TeamByUserIdDto> getTeamsByUserId(UUID userId) {
+        var teamsByUserIdDto = new ArrayList<TeamByUserIdDto>();
 
         for (var team : teamRepository.findAll()) {
-            if (team.getId().equals(teamId)) {
-                var teamDto = modelMapper.map(team, TeamByTeamIdDto.class);
-                teamsByTeamIdDto.add(teamDto);
+            if (userTeamAccessRepository.existsByUserIdAndTeamId(userId, team.getId())) {
+                var teamDto = modelMapper.map(team, TeamByUserIdDto.class);
+                teamsByUserIdDto.add(teamDto);
             }
         }
-        return teamsByTeamIdDto;
-    }
-
-    @Override
-    public List<TeamByNameDto> getTeamsByName(String name) {
-        var teamsByNameDto = new ArrayList<TeamByNameDto>();
-
-        for (var team : teamRepository.findAll()) {
-            if (team.getName().equals(name)) {
-                var teamDto = modelMapper.map(team, TeamByNameDto.class);
-                teamsByNameDto.add(teamDto);
-            }
-        }
-        return teamsByNameDto;
-    }
-
-    @Override
-    public List<TeamByDescriptionDto> getTeamsByDescription(String description) {
-        var teamsByDescriptionDto = new ArrayList<TeamByDescriptionDto>();
-
-        for (var team : teamRepository.findAll()) {
-            if (team.getDescription().equals(description)) {
-                var teamDto = modelMapper.map(team, TeamByDescriptionDto.class);
-                teamsByDescriptionDto.add(teamDto);
-            }
-        }
-        return teamsByDescriptionDto;
+        return teamsByUserIdDto;
     }
 }
