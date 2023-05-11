@@ -3,18 +3,16 @@ package urfu.bookingStand.domain.services;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import urfu.bookingStand.api.dto.team.TeamByUserIdDto;
 import urfu.bookingStand.database.entities.Team;
 import urfu.bookingStand.database.entities.UserTeamAccess;
 import urfu.bookingStand.database.repositories.TeamRepository;
 import urfu.bookingStand.database.repositories.UserTeamAccessRepository;
 import urfu.bookingStand.domain.abstractions.TeamService;
 import urfu.bookingStand.domain.requests.AddTeamRequest;
+import urfu.bookingStand.domain.responses.TeamByUserIdResponse;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.text.MessageFormat;
 import java.util.UUID;
 
 @Component
@@ -42,12 +40,12 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public List<TeamByUserIdDto> getTeamsByUserId(UUID userId) {
-        var teamsByUserIdDto = new ArrayList<TeamByUserIdDto>();
+    public List<TeamByUserIdResponse> getTeamsByUserId(UUID userId) {
+        var teamsByUserIdDto = new ArrayList<TeamByUserIdResponse>();
 
         for (var team : teamRepository.findAll()) {
             if (userTeamAccessRepository.existsByUserIdAndTeamId(userId, team.getId())) {
-                var teamDto = modelMapper.map(team, TeamByUserIdDto.class);
+                var teamDto = modelMapper.map(team, TeamByUserIdResponse.class);
                 teamsByUserIdDto.add(teamDto);
             }
         }
