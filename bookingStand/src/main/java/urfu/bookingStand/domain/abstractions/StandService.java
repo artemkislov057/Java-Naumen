@@ -5,6 +5,7 @@ import urfu.bookingStand.domain.exceptions.*;
 import urfu.bookingStand.domain.requests.AddStandRequest;
 import urfu.bookingStand.domain.requests.BookStandRequest;
 import urfu.bookingStand.domain.responses.StandEmploymentResponse;
+import urfu.bookingStand.domain.responses.StandByTeamIdResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,7 +22,6 @@ public interface StandService {
             NoAccessException,
             UserNotFoundException, BookingNotFoundException;
 
-    List<StandByTeamIdDto> getStandByTeamId(UUID teamId) throws TeamNotFoundException;
-
     List<StandEmploymentResponse> getStandEmploymentByTimePeriod(UUID standId, LocalDateTime from, LocalDateTime to) throws StandNotFoundException;
+    List<StandByTeamIdResponse> getStandByTeamId(UUID teamId) throws TeamNotFoundException;
 }
