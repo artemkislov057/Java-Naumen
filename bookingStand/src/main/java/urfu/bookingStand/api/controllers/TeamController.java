@@ -33,7 +33,7 @@ public class TeamController {
 
     @PostMapping("api/teams")
     @ResponseBody
-    public void AddTeam(@RequestBody AddTeamDto body, Authentication authentication) {
+    public void AddTeam(@RequestBody AddTeamDto body) {
         var request = modelMapper.map(body, AddTeamRequest.class);
         teamService.AddTeam(request);
     }
