@@ -1,9 +1,12 @@
 package urfu.bookingStand.domain.abstractions;
 
+import urfu.bookingStand.api.dto.stand.StandByTeamIdDto;
 import urfu.bookingStand.domain.exceptions.*;
 import urfu.bookingStand.domain.requests.AddStandRequest;
 import urfu.bookingStand.domain.requests.BookStandRequest;
+import urfu.bookingStand.domain.responses.StandByTeamIdResponse;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface StandService {
@@ -16,4 +19,6 @@ public interface StandService {
             throws StandNotFoundException,
             NoAccessException,
             UserNotFoundException, BookingNotFoundException;
+
+    List<StandByTeamIdResponse> getStandByTeamId(UUID teamId) throws TeamNotFoundException;
 }

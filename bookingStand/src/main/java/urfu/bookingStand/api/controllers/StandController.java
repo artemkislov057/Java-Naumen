@@ -7,12 +7,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import urfu.bookingStand.api.dto.stand.AddStandDto;
 import urfu.bookingStand.api.dto.stand.BookStandDto;
+import urfu.bookingStand.api.dto.stand.StandByTeamIdDto;
 import urfu.bookingStand.domain.abstractions.StandService;
 import urfu.bookingStand.domain.exceptions.*;
 import urfu.bookingStand.domain.models.BookingUserDetails;
 import urfu.bookingStand.domain.requests.AddStandRequest;
 import urfu.bookingStand.domain.requests.BookStandRequest;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -55,5 +58,18 @@ public class StandController {
             StandNotFoundException, BookingNotFoundException {
         var user = (BookingUserDetails) authentication.getPrincipal();
         standService.DeleteBookStand(standId, bookingId, user.getId());
+    }
+
+    @GetMapping("api/teams/{teamId}/stands")
+    @ResponseBody
+    public List<StandByTeamIdDto> getStandByTeamId(@PathVariable UUID teamId) throws TeamNotFoundException {
+        var standsByTeamIdResponse = standService.getStandByTeamId(teamId);
+
+        var standsDto = new ArrayList<StandByTeamIdDto>();
+        for (var standResponse : standsByTeamIdResponse) {
+            var standByTeamIdDto = modelMapper.map(standResponse, StandByTeamIdDto.class);
+            standsDto.add(standByTeamIdDto);
+        }
+        return standsDto;
     }
 }
