@@ -8,12 +8,14 @@ import org.springframework.web.bind.annotation.*;
 import urfu.bookingStand.api.dto.team.AddTeamDto;
 import urfu.bookingStand.api.dto.team.InviteUserToTeamDto;
 import urfu.bookingStand.api.dto.team.TeamByUserIdDto;
+import urfu.bookingStand.api.dto.team.TeamInvitationDto;
 import urfu.bookingStand.domain.abstractions.TeamService;
 import urfu.bookingStand.domain.exceptions.NoAccessException;
 import urfu.bookingStand.domain.exceptions.ObjectRecreationException;
 import urfu.bookingStand.domain.models.BookingUserDetails;
 import urfu.bookingStand.domain.requests.AddTeamRequest;
 import urfu.bookingStand.domain.responses.TeamByUserIdResponse;
+import urfu.bookingStand.domain.responses.TeamInvitationResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +60,19 @@ public class TeamController {
                                  @RequestBody InviteUserToTeamDto body,
                                  Authentication authentication) throws NoAccessException, ObjectRecreationException {
         var user = (BookingUserDetails) authentication.getPrincipal();
-        teamService.InviteUserToTeam(user.getId(), body.getUserId(), teamId);
+        teamService.inviteUserToTeam(user.getId(), body.getUserId(), teamId);
+    }
+
+    @GetMapping("api/teams/invitations")
+    @ResponseBody
+    public List<TeamInvitationDto> getMyInvitations(Authentication authentication) {
+        var user = (BookingUserDetails) authentication.getPrincipal();
+        var invitations = teamService.getUserInvitations(user.getId());
+        var result = new ArrayList<TeamInvitationDto>();
+        for (TeamInvitationResponse invitation : invitations) {
+            result.add(modelMapper.map(invitation, TeamInvitationDto.class));
+        }
+
+        return result;
     }
 }

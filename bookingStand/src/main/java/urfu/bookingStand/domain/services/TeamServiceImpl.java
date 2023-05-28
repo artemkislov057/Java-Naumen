@@ -14,6 +14,7 @@ import urfu.bookingStand.domain.exceptions.NoAccessException;
 import urfu.bookingStand.domain.exceptions.ObjectRecreationException;
 import urfu.bookingStand.domain.requests.AddTeamRequest;
 import urfu.bookingStand.domain.responses.TeamByUserIdResponse;
+import urfu.bookingStand.domain.responses.TeamInvitationResponse;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -60,7 +61,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public void InviteUserToTeam(UUID userId, UUID userToAddId, UUID teamId) throws NoAccessException, ObjectRecreationException {
+    public void inviteUserToTeam(UUID userId, UUID userToAddId, UUID teamId) throws NoAccessException, ObjectRecreationException {
         var userTeamAccess = userTeamAccessRepository.findByUserIdAndTeamId(userId, teamId);
         if (userTeamAccess.isEmpty()) {
             throw new NoAccessException(MessageFormat.format("User with id {0} has no access to team with id {1}", userId, teamId));
@@ -76,5 +77,16 @@ public class TeamServiceImpl implements TeamService {
         invitation.setUserId(userToAddId);
         invitation.setTeam(userTeamAccess.get().getTeam());
         teamInvitationRepository.save(invitation);
+    }
+
+    @Override
+    public List<TeamInvitationResponse> getUserInvitations(UUID userId) {
+        var invitations = teamInvitationRepository.getByUserId(userId);
+        var result = new ArrayList<TeamInvitationResponse>();
+        for (TeamInvitation teamInvitation : invitations) {
+            result.add(modelMapper.map(teamInvitation.getTeam(), TeamInvitationResponse.class));
+        }
+
+        return result;
     }
 }
