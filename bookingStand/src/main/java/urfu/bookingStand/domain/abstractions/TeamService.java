@@ -1,5 +1,7 @@
 package urfu.bookingStand.domain.abstractions;
 
+import urfu.bookingStand.domain.exceptions.NoAccessException;
+import urfu.bookingStand.domain.exceptions.ObjectRecreationException;
 import urfu.bookingStand.domain.requests.AddTeamRequest;
 import urfu.bookingStand.domain.responses.TeamByUserIdResponse;
 
@@ -8,6 +10,8 @@ import java.util.UUID;
 
 public interface TeamService {
     void AddTeam(AddTeamRequest request, UUID userId);
-  
+
     List<TeamByUserIdResponse> getTeamsByUserId(UUID userId);
+
+    void InviteUserToTeam(UUID userId, UUID userToAddId, UUID teamId) throws NoAccessException, ObjectRecreationException;
 }
