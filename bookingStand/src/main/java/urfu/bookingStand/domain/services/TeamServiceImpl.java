@@ -61,7 +61,8 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public void InviteUserToTeam(UUID userId, UUID userToAddId, UUID teamId) throws NoAccessException, ObjectRecreationException {
-        if (!userTeamAccessRepository.existsByUserIdAndTeamId(userId, teamId)) {
+        var userTeamAccess = userTeamAccessRepository.findByUserIdAndTeamId(userId, teamId);
+        if (userTeamAccess.isEmpty()) {
             throw new NoAccessException(MessageFormat.format("User with id {0} has no access to team with id {1}", userId, teamId));
         }
 
@@ -73,7 +74,7 @@ public class TeamServiceImpl implements TeamService {
 
         var invitation = new TeamInvitation();
         invitation.setUserId(userToAddId);
-        invitation.setTeamId(teamId);
+        invitation.setTeam(userTeamAccess.get().getTeam());
         teamInvitationRepository.save(invitation);
     }
 }

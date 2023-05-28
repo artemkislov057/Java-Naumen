@@ -1,9 +1,6 @@
 package urfu.bookingStand.database.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.UUID;
 
@@ -14,7 +11,9 @@ public class TeamInvitation {
     @GeneratedValue
     private long id;
     private UUID userId;
-    private UUID teamId;
+
+    @ManyToOne(targetEntity = Team.class, fetch = FetchType.EAGER)
+    private Team team;
 
     public long getId() {
         return id;
@@ -32,11 +31,11 @@ public class TeamInvitation {
         this.userId = userId;
     }
 
-    public UUID getTeamId() {
-        return teamId;
+    public Team getTeam() {
+        return team;
     }
 
-    public void setTeamId(UUID teamId) {
-        this.teamId = teamId;
+    public void setTeam(Team team) {
+        this.team = team;
     }
 }
