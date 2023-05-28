@@ -18,5 +18,7 @@ public interface TeamService {
 
     List<TeamInvitationResponse> getUserInvitations(UUID userId);
 
-    void AcceptInvitationToTeam(UUID userId, UUID teamId) throws NoAccessException;
+    void acceptInvitationToTeam(UUID userId, UUID teamId) throws NoAccessException;
+
+    void rejectInvitationToTeam(UUID userId, UUID teamId);
 }

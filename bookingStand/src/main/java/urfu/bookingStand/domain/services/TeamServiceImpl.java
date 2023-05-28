@@ -91,7 +91,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public void AcceptInvitationToTeam(UUID userId, UUID teamId) throws NoAccessException {
+    public void acceptInvitationToTeam(UUID userId, UUID teamId) throws NoAccessException {
         var hasUserAccessToTeam = userTeamAccessRepository.existsByUserIdAndTeamId(userId, teamId);
         if (hasUserAccessToTeam) {
             return;
@@ -106,6 +106,17 @@ public class TeamServiceImpl implements TeamService {
         userTeamAccess.setUserId(userId);
         userTeamAccess.setTeam(invitation.get().getTeam());
         userTeamAccessRepository.save(userTeamAccess);
+
+        teamInvitationRepository.delete(invitation.get());
+    }
+
+    @Override
+    public void rejectInvitationToTeam(UUID userId, UUID teamId) {
+        var hasUserAccessToTeam = userTeamAccessRepository.existsByUserIdAndTeamId(userId, teamId);
+        var invitation = teamInvitationRepository.findByTeamIdAndUserId(teamId, userId);
+        if (hasUserAccessToTeam || invitation.isEmpty()) {
+            return;
+        }
 
         teamInvitationRepository.delete(invitation.get());
     }

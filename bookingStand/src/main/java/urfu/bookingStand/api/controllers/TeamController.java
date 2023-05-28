@@ -80,6 +80,13 @@ public class TeamController {
     @ResponseBody
     public void AcceptInvitation(@PathVariable UUID teamId, Authentication authentication) throws NoAccessException {
         var user = (BookingUserDetails) authentication.getPrincipal();
-        teamService.AcceptInvitationToTeam(user.getId(), teamId);
+        teamService.acceptInvitationToTeam(user.getId(), teamId);
+    }
+
+    @PostMapping("api/teams/{teamId}/reject-invitation")
+    @ResponseBody
+    public void RejectInvitation(@PathVariable UUID teamId, Authentication authentication) {
+        var user = (BookingUserDetails) authentication.getPrincipal();
+        teamService.rejectInvitationToTeam(user.getId(), teamId);
     }
 }
