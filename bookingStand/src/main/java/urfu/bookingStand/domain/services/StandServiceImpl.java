@@ -1,10 +1,8 @@
 package urfu.bookingStand.domain.services;
 
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import urfu.bookingStand.api.dto.stand.StandByTeamIdDto;
 import urfu.bookingStand.database.entities.Booking;
 import urfu.bookingStand.database.entities.Stand;
 import urfu.bookingStand.database.repositories.*;
@@ -12,14 +10,14 @@ import urfu.bookingStand.domain.abstractions.StandService;
 import urfu.bookingStand.domain.exceptions.*;
 import urfu.bookingStand.domain.requests.AddStandRequest;
 import urfu.bookingStand.domain.requests.BookStandRequest;
-import urfu.bookingStand.domain.responses.StandEmploymentResponse;
 import urfu.bookingStand.domain.responses.StandByTeamIdResponse;
+import urfu.bookingStand.domain.responses.StandEmploymentResponse;
 
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Component
 public class StandServiceImpl implements StandService {
@@ -132,7 +130,7 @@ public class StandServiceImpl implements StandService {
         if (team.isEmpty())
             throw new TeamNotFoundException(MessageFormat.format("Team with id {0} doesn't exist.", teamId));
 
-        var stands = team.get().getStands();
+        var stands = standRepository.getByTeamId(team.get().getId());
         var standsByTeamIdDto = new ArrayList<StandByTeamIdResponse>();
 
         for (var stand : stands) {

@@ -8,24 +8,24 @@ import java.time.LocalDateTime;
 public class BookStandDto {
     @NotBlank
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private LocalDateTime StartTime;
+    private LocalDateTime startTime;
     @NotBlank
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private LocalDateTime EndTime;
+    private LocalDateTime endTime;
 
     public LocalDateTime getStartTime() {
-        return StartTime;
+        return startTime;
     }
 
     public void setStartTime(LocalDateTime startTime) {
-        StartTime = startTime;
+        this.startTime = startTime;
     }
 
     public LocalDateTime getEndTime() {
-        return EndTime;
+        return endTime;
     }
 
     public void setEndTime(LocalDateTime endTime) {
-        EndTime = endTime;
+        this.endTime = endTime;
     }
 }
