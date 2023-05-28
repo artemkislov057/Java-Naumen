@@ -1,9 +1,5 @@
 package urfu.bookingStand.api.dto.team;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotBlank;
-
 import java.util.UUID;
 
 public class TeamByUserIdDto {

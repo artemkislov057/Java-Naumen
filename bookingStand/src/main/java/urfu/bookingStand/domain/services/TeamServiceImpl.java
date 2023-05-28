@@ -35,20 +35,18 @@ public class TeamServiceImpl implements TeamService {
         teamRepository.save(team);
         var userTeamAccess = new UserTeamAccess();
         userTeamAccess.setUserId(userId);
-        userTeamAccess.setTeamId(team.getId());
+        userTeamAccess.setTeam(team);
         userTeamAccessRepository.save(userTeamAccess);
     }
 
     @Override
     public List<TeamByUserIdResponse> getTeamsByUserId(UUID userId) {
-        var teamsByUserIdDto = new ArrayList<TeamByUserIdResponse>();
-
-        for (var team : teamRepository.findAll()) {
-            if (userTeamAccessRepository.existsByUserIdAndTeamId(userId, team.getId())) {
-                var teamDto = modelMapper.map(team, TeamByUserIdResponse.class);
-                teamsByUserIdDto.add(teamDto);
-            }
+        var accesses = userTeamAccessRepository.getByUserId(userId);
+        var result = new ArrayList<TeamByUserIdResponse>();
+        for (UserTeamAccess access : accesses) {
+            result.add(modelMapper.map(access.getTeam(), TeamByUserIdResponse.class));
         }
-        return teamsByUserIdDto;
+
+        return result;
     }
 }
