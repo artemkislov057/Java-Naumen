@@ -2,18 +2,22 @@ package urfu.bookingStand.api.controllers;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import urfu.bookingStand.api.dto.stand.AddStandDto;
 import urfu.bookingStand.api.dto.stand.BookStandDto;
 import urfu.bookingStand.api.dto.stand.StandByTeamIdDto;
+import urfu.bookingStand.api.dto.stand.StandEmploymentDto;
 import urfu.bookingStand.domain.abstractions.StandService;
 import urfu.bookingStand.domain.exceptions.*;
 import urfu.bookingStand.domain.models.BookingUserDetails;
 import urfu.bookingStand.domain.requests.AddStandRequest;
 import urfu.bookingStand.domain.requests.BookStandRequest;
+import urfu.bookingStand.domain.responses.StandEmploymentResponse;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -72,4 +76,20 @@ public class StandController {
         }
         return standsDto;
     }
+
+    @GetMapping("/api/stands/{standId}/bookings")
+    @ResponseBody
+    public List<StandEmploymentDto> getStandEmploymentByTimePeriod(@PathVariable UUID standId,
+                                                                   @RequestParam("from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
+                                                                   @RequestParam("to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to) throws StandNotFoundException {
+       var standEmploymentResponse = standService.getStandEmploymentByTimePeriod(standId, from, to);
+
+       var standsEmploymentDto = new ArrayList<StandEmploymentDto>();
+       for (var standEmployment : standEmploymentResponse) {
+            var standEmploymentDto = modelMapper.map(standEmployment, StandEmploymentDto.class);
+            standsEmploymentDto.add(standEmploymentDto);
+       }
+       return standsEmploymentDto;
+    }
+
 }

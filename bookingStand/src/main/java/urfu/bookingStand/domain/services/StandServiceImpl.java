@@ -1,6 +1,7 @@
 package urfu.bookingStand.domain.services;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import urfu.bookingStand.api.dto.stand.StandByTeamIdDto;
@@ -11,13 +12,14 @@ import urfu.bookingStand.domain.abstractions.StandService;
 import urfu.bookingStand.domain.exceptions.*;
 import urfu.bookingStand.domain.requests.AddStandRequest;
 import urfu.bookingStand.domain.requests.BookStandRequest;
+import urfu.bookingStand.domain.responses.StandEmploymentResponse;
 import urfu.bookingStand.domain.responses.StandByTeamIdResponse;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Component
 public class StandServiceImpl implements StandService {
@@ -138,5 +140,23 @@ public class StandServiceImpl implements StandService {
             standsByTeamIdDto.add(standDto);
         }
         return standsByTeamIdDto;
+    }
+
+    @Override
+    public List<StandEmploymentResponse> getStandEmploymentByTimePeriod(UUID standId, LocalDateTime from, LocalDateTime to) throws StandNotFoundException {
+
+        var stand = standRepository.findById(standId);
+        if (stand.isEmpty())
+            throw new StandNotFoundException(MessageFormat.format("Stand with id {0} doesn't exist.", standId));
+
+        var bookings = bookingRepository.findAllBookingsBetween(from, to);
+        var standsResponses = new ArrayList<StandEmploymentResponse>();
+        for (var booking : bookings) {
+
+            var standResponse = modelMapper.map(booking, StandEmploymentResponse.class);
+            standsResponses.add(standResponse);
+        }
+
+        return standsResponses;
     }
 }
