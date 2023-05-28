@@ -17,4 +17,6 @@ public interface TeamService {
     void inviteUserToTeam(UUID userId, UUID userToAddId, UUID teamId) throws NoAccessException, ObjectRecreationException;
 
     List<TeamInvitationResponse> getUserInvitations(UUID userId);
+
+    void AcceptInvitationToTeam(UUID userId, UUID teamId) throws NoAccessException;
 }
