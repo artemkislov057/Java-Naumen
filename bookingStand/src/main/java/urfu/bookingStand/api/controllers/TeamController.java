@@ -2,6 +2,7 @@ package urfu.bookingStand.api.controllers;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -91,10 +92,10 @@ public class TeamController {
         teamService.rejectInvitationToTeam(user.getId(), teamId);
     }
 
-    @GetMapping("api/teams/{teamId}/report/{reportDate}")
+    @GetMapping("api/teams/{teamId}/report")
     @ResponseBody
     public void getReportForTeamByDate(@PathVariable UUID teamId,
-                                       @PathVariable Date reportDate,
+                                       @RequestParam("report-date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date reportDate,
                                        Authentication authentication) throws NoAccessException {
         var user = (BookingUserDetails) authentication.getPrincipal();
         teamService.getReportForTeamByDate(user.getId(), teamId, reportDate);
