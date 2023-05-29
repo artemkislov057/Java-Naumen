@@ -40,7 +40,7 @@ public class ReportServiceImpl implements ReportService {
         HSSFWorkbook workbook = new HSSFWorkbook();
         var stands = standRepository.getByTeamId(teamId);
         for (Stand stand : stands) {
-            createReportForStand(stand, date, workbook.createSheet(stand.getName()));
+            createReportForStand(stand, date, workbook);
         }
 
         try (FileOutputStream out = new FileOutputStream(new File("E:\\booking\\report.xls"))) {
@@ -51,14 +51,15 @@ public class ReportServiceImpl implements ReportService {
         }
     }
 
-    private void createReportForStand(Stand stand, Date date, HSSFSheet sheet) {
+    private void createReportForStand(Stand stand, Date date, HSSFWorkbook workbook) {
+        var sheet = workbook.createSheet(stand.getName() + "(" + stand.getId() + ")");
         var startDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
         var endDateTime = date.toInstant().atZone(ZoneId.systemDefault())
                 .plusHours(23)
                 .plusMinutes(59)
                 .plusMinutes(59)
                 .toLocalDateTime();
-        var bookings = bookingRepository.findAllBookingsBetween(startDateTime, endDateTime);
+        var bookings = bookingRepository.findAllBookingsBetween(stand.getId(), startDateTime, endDateTime);
         List<TeamStandReportModel> data = new ArrayList<>();
         for (Booking booking : bookings) {
             var dataRow = new TeamStandReportModel();
