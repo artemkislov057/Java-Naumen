@@ -12,9 +12,9 @@ import urfu.bookingStand.database.repositories.StandRepository;
 import urfu.bookingStand.domain.abstractions.ReportService;
 import urfu.bookingStand.domain.models.report.TeamStandReportModel;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,7 +43,8 @@ public class ReportServiceImpl implements ReportService {
             createReportForStand(stand, date, workbook);
         }
 
-        try (FileOutputStream out = new FileOutputStream(new File("E:\\booking\\report.xls"))) {
+        var pathname = "E:\\booking\\" + teamId + "\\" + new SimpleDateFormat("yyyy-MM-dd").format(date) + "-report.xls";
+        try (FileOutputStream out = new FileOutputStream(pathname)) {
             workbook.write(out);
             workbook.close();
         } catch (IOException e) {
