@@ -18,6 +18,7 @@ import urfu.bookingStand.domain.responses.TeamByUserIdResponse;
 import urfu.bookingStand.domain.responses.TeamInvitationResponse;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -88,5 +89,12 @@ public class TeamController {
     public void RejectInvitation(@PathVariable UUID teamId, Authentication authentication) {
         var user = (BookingUserDetails) authentication.getPrincipal();
         teamService.rejectInvitationToTeam(user.getId(), teamId);
+    }
+
+    @GetMapping("api/teams/{teamId}/report/{reportDate}")
+    @ResponseBody
+    public void getReportForTeamByDate(@PathVariable UUID teamId,
+                                       @PathVariable Date reportDate,
+                                       Authentication authentication) {
     }
 }
