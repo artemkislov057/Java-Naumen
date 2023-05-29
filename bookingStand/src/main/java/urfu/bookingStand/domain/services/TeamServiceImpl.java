@@ -9,6 +9,7 @@ import urfu.bookingStand.database.entities.UserTeamAccess;
 import urfu.bookingStand.database.repositories.TeamInvitationRepository;
 import urfu.bookingStand.database.repositories.TeamRepository;
 import urfu.bookingStand.database.repositories.UserTeamAccessRepository;
+import urfu.bookingStand.domain.abstractions.ReportService;
 import urfu.bookingStand.domain.abstractions.TeamService;
 import urfu.bookingStand.domain.exceptions.NoAccessException;
 import urfu.bookingStand.domain.exceptions.ObjectRecreationException;
@@ -18,6 +19,7 @@ import urfu.bookingStand.domain.responses.TeamInvitationResponse;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,6 +28,7 @@ public class TeamServiceImpl implements TeamService {
     private final UserTeamAccessRepository userTeamAccessRepository;
     private final TeamRepository teamRepository;
     private final TeamInvitationRepository teamInvitationRepository;
+    private final ReportService reportService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -33,10 +36,12 @@ public class TeamServiceImpl implements TeamService {
     @Autowired
     public TeamServiceImpl(UserTeamAccessRepository userTeamAccessRepository,
                            TeamRepository teamRepository,
-                           TeamInvitationRepository teamInvitationRepository) {
+                           TeamInvitationRepository teamInvitationRepository,
+                           ReportService reportService) {
         this.userTeamAccessRepository = userTeamAccessRepository;
         this.teamRepository = teamRepository;
         this.teamInvitationRepository = teamInvitationRepository;
+        this.reportService = reportService;
     }
 
     @Override
@@ -119,5 +124,15 @@ public class TeamServiceImpl implements TeamService {
         }
 
         teamInvitationRepository.delete(invitation.get());
+    }
+
+    @Override
+    public void createReportForTeamByDate(UUID userId, UUID teamId, Date reportDate) throws NoAccessException {
+        var hasUserAccessToTeam = userTeamAccessRepository.existsByUserIdAndTeamId(userId, teamId);
+        if (!hasUserAccessToTeam) {
+            throw new NoAccessException(MessageFormat.format("User with id {0} has no invitation to team {1}", userId, teamId));
+        }
+
+        reportService.getOrCreateReport(teamId, reportDate);
     }
 }

@@ -81,8 +81,8 @@ public class StandServiceImpl implements StandService {
             throw new NotSuchTimeException(MessageFormat.format("Дата начала брони: {0} идет после даты окончания {1}.",
                     startTime, endTime));
 
-        if (bookingRepository.existsByStartTimeBetween(startTime, endTime) ||
-                bookingRepository.existsByEndTimeBetween(startTime, endTime)){
+        if (bookingRepository.existsByStandIdEqualsAndStartTimeBetween(standId, startTime, endTime) ||
+                bookingRepository.existsByStandIdEqualsAndEndTimeBetween(standId, startTime, endTime)){
             throw new NotSuchTimeException(MessageFormat.format("Пересечение дат: в промежутке между {0} и {1} есть бронь.",
                     startTime, endTime));
         }
@@ -147,7 +147,7 @@ public class StandServiceImpl implements StandService {
         if (stand.isEmpty())
             throw new StandNotFoundException(MessageFormat.format("Stand with id {0} doesn't exist.", standId));
 
-        var bookings = bookingRepository.findAllBookingsBetween(from, to);
+        var bookings = bookingRepository.findAllBookingsBetween(standId, from, to);
         var standsResponses = new ArrayList<StandEmploymentResponse>();
         for (var booking : bookings) {
 
