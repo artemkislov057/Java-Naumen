@@ -18,6 +18,7 @@ import urfu.bookingStand.domain.responses.TeamInvitationResponse;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -119,5 +120,13 @@ public class TeamServiceImpl implements TeamService {
         }
 
         teamInvitationRepository.delete(invitation.get());
+    }
+
+    @Override
+    public void getReportForTeamByDate(UUID userId, UUID teamId, Date reportDate) throws NoAccessException {
+        var hasUserAccessToTeam = userTeamAccessRepository.existsByUserIdAndTeamId(userId, teamId);
+        if (!hasUserAccessToTeam) {
+            throw new NoAccessException(MessageFormat.format("User with id {0} has no invitation to team {1}", userId, teamId));
+        }
     }
 }

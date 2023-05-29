@@ -6,6 +6,7 @@ import urfu.bookingStand.domain.requests.AddTeamRequest;
 import urfu.bookingStand.domain.responses.TeamByUserIdResponse;
 import urfu.bookingStand.domain.responses.TeamInvitationResponse;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,4 +22,6 @@ public interface TeamService {
     void acceptInvitationToTeam(UUID userId, UUID teamId) throws NoAccessException;
 
     void rejectInvitationToTeam(UUID userId, UUID teamId);
+
+    void getReportForTeamByDate(UUID userId, UUID teamId, Date reportDate) throws NoAccessException;
 }

@@ -95,6 +95,8 @@ public class TeamController {
     @ResponseBody
     public void getReportForTeamByDate(@PathVariable UUID teamId,
                                        @PathVariable Date reportDate,
-                                       Authentication authentication) {
+                                       Authentication authentication) throws NoAccessException {
+        var user = (BookingUserDetails) authentication.getPrincipal();
+        teamService.getReportForTeamByDate(user.getId(), teamId, reportDate);
     }
 }
