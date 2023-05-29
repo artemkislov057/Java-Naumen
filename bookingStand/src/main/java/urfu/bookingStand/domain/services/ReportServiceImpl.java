@@ -5,6 +5,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import urfu.bookingStand.configuration.reportService.ReportServiceConfig;
 import urfu.bookingStand.database.entities.Booking;
 import urfu.bookingStand.database.entities.Stand;
 import urfu.bookingStand.database.repositories.BookingRepository;
@@ -12,6 +13,7 @@ import urfu.bookingStand.database.repositories.StandRepository;
 import urfu.bookingStand.domain.abstractions.ReportService;
 import urfu.bookingStand.domain.models.report.TeamStandReportModel;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -24,12 +26,15 @@ import java.util.UUID;
 @Component
 public class ReportServiceImpl implements ReportService {
 
+    private final ReportServiceConfig reportServiceConfig;
     private final StandRepository standRepository;
     private final BookingRepository bookingRepository;
 
     @Autowired
-    public ReportServiceImpl(StandRepository standRepository,
+    public ReportServiceImpl(ReportServiceConfig reportServiceConfig,
+                             StandRepository standRepository,
                              BookingRepository bookingRepository) {
+        this.reportServiceConfig = reportServiceConfig;
 
         this.standRepository = standRepository;
         this.bookingRepository = bookingRepository;
@@ -43,7 +48,9 @@ public class ReportServiceImpl implements ReportService {
             createReportForStand(stand, date, workbook);
         }
 
-        var pathname = "E:\\booking\\" + teamId + "\\" + new SimpleDateFormat("yyyy-MM-dd").format(date) + "-report.xls";
+        var folderName = reportServiceConfig.getFilesPath() + teamId;
+        new File(folderName).mkdirs();
+        var pathname = folderName + "\\" + new SimpleDateFormat("yyyy-MM-dd").format(date) + "-report.xls";
         try (FileOutputStream out = new FileOutputStream(pathname)) {
             workbook.write(out);
             workbook.close();
