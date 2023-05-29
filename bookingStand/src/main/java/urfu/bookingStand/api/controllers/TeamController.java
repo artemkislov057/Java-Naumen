@@ -92,12 +92,12 @@ public class TeamController {
         teamService.rejectInvitationToTeam(user.getId(), teamId);
     }
 
-    @GetMapping("api/teams/{teamId}/report")
+    @PostMapping("api/teams/{teamId}/report")
     @ResponseBody
-    public void getReportForTeamByDate(@PathVariable UUID teamId,
-                                       @RequestParam("report-date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date reportDate,
-                                       Authentication authentication) throws NoAccessException {
+    public void createReportForTeamByDate(@PathVariable UUID teamId,
+                                          @RequestParam("report-date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date reportDate,
+                                          Authentication authentication) throws NoAccessException {
         var user = (BookingUserDetails) authentication.getPrincipal();
-        teamService.getReportForTeamByDate(user.getId(), teamId, reportDate);
+        teamService.createReportForTeamByDate(user.getId(), teamId, reportDate);
     }
 }

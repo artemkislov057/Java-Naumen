@@ -23,5 +23,5 @@ public interface TeamService {
 
     void rejectInvitationToTeam(UUID userId, UUID teamId);
 
-    void getReportForTeamByDate(UUID userId, UUID teamId, Date reportDate) throws NoAccessException;
+    void createReportForTeamByDate(UUID userId, UUID teamId, Date reportDate) throws NoAccessException;
 }

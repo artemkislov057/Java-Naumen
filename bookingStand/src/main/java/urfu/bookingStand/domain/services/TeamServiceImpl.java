@@ -127,7 +127,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public void getReportForTeamByDate(UUID userId, UUID teamId, Date reportDate) throws NoAccessException {
+    public void createReportForTeamByDate(UUID userId, UUID teamId, Date reportDate) throws NoAccessException {
         var hasUserAccessToTeam = userTeamAccessRepository.existsByUserIdAndTeamId(userId, teamId);
         if (!hasUserAccessToTeam) {
             throw new NoAccessException(MessageFormat.format("User with id {0} has no invitation to team {1}", userId, teamId));
