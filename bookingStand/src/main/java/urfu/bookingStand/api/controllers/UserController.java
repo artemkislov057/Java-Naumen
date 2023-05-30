@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import urfu.bookingStand.api.dto.user.RegisterUserDto;
 import urfu.bookingStand.domain.abstractions.UserService;
@@ -26,13 +25,13 @@ public class UserController {
 
     @PostMapping("api/users")
     @ResponseBody
-    public void RegisterUser(@Valid RegisterUserDto body) throws ObjectRecreationException {
+    public void registerUser(@Valid RegisterUserDto body) throws ObjectRecreationException {
         var request = modelMapper.map(body, RegisterUserRequest.class);
-        userService.RegisterUser(request);
+        userService.registerUser(request);
     }
 
     @GetMapping("registration")
-    public String RegisterView() {
+    public String registerView() {
         return "registration";
     }
 }

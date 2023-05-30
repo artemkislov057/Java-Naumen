@@ -45,7 +45,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public void AddTeam(AddTeamRequest request, UUID userId) {
+    public void addTeam(AddTeamRequest request, UUID userId) {
         var team = modelMapper.map(request, Team.class);
         teamRepository.save(team);
         var userTeamAccess = new UserTeamAccess();

@@ -6,36 +6,36 @@ import java.util.UUID;
 
 public class UserDto {
     @NotBlank
-    private UUID UserId;
+    private UUID userId;
 
     @NotBlank
-    private String Name;
+    private String name;
 
     @NotBlank
-    private String Shortname;
+    private String shortname;
 
 
     public UUID getUserId() {
-        return UserId;
+        return userId;
     }
 
     public void setUserId(UUID userId) {
-        UserId = userId;
+        this.userId = userId;
     }
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public void setName(String name) {
-        Name = name;
+        this.name = name;
     }
 
     public String getShortname() {
-        return Shortname;
+        return shortname;
     }
 
     public void setShortname(String shortname) {
-        Shortname = shortname;
+        this.shortname = shortname;
     }
 }

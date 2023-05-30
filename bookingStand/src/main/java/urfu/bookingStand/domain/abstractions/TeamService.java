@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface TeamService {
-    void AddTeam(AddTeamRequest request, UUID userId);
+    void addTeam(AddTeamRequest request, UUID userId);
 
     List<TeamByUserIdResponse> getTeamsByUserId(UUID userId);
 

@@ -40,12 +40,12 @@ public class TeamController {
     public void AddTeam(@RequestBody AddTeamDto body, Authentication authentication) {
         var user = (BookingUserDetails) authentication.getPrincipal();
         var request = modelMapper.map(body, AddTeamRequest.class);
-        teamService.AddTeam(request, user.getId());
+        teamService.addTeam(request, user.getId());
     }
 
     @GetMapping("api/teams")
     @ResponseBody
-    public List<TeamByUserIdDto> GetTeams(Authentication authentication) {
+    public List<TeamByUserIdDto> getTeams(Authentication authentication) {
         var user = (BookingUserDetails) authentication.getPrincipal();
         var teams = teamService.getTeamsByUserId(user.getId());
         var result = new ArrayList<TeamByUserIdDto>();
@@ -58,7 +58,7 @@ public class TeamController {
 
     @PostMapping("api/teams/{teamId}/invite")
     @ResponseBody
-    public void InviteUserToTeam(@PathVariable UUID teamId,
+    public void inviteUserToTeam(@PathVariable UUID teamId,
                                  @RequestBody InviteUserToTeamDto body,
                                  Authentication authentication) throws NoAccessException, ObjectRecreationException {
         var user = (BookingUserDetails) authentication.getPrincipal();
@@ -80,14 +80,14 @@ public class TeamController {
 
     @PostMapping("api/teams/{teamId}/accept-invitation")
     @ResponseBody
-    public void AcceptInvitation(@PathVariable UUID teamId, Authentication authentication) throws NoAccessException {
+    public void acceptInvitation(@PathVariable UUID teamId, Authentication authentication) throws NoAccessException {
         var user = (BookingUserDetails) authentication.getPrincipal();
         teamService.acceptInvitationToTeam(user.getId(), teamId);
     }
 
     @PostMapping("api/teams/{teamId}/reject-invitation")
     @ResponseBody
-    public void RejectInvitation(@PathVariable UUID teamId, Authentication authentication) {
+    public void rejectInvitation(@PathVariable UUID teamId, Authentication authentication) {
         var user = (BookingUserDetails) authentication.getPrincipal();
         teamService.rejectInvitationToTeam(user.getId(), teamId);
     }

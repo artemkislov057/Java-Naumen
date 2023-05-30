@@ -5,5 +5,5 @@ import urfu.bookingStand.domain.exceptions.ObjectRecreationException;
 import urfu.bookingStand.domain.requests.RegisterUserRequest;
 
 public interface UserService extends UserDetailsService {
-    void RegisterUser(RegisterUserRequest request) throws ObjectRecreationException;
+    void registerUser(RegisterUserRequest request) throws ObjectRecreationException;
 }

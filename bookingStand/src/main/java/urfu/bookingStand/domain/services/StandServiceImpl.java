@@ -44,7 +44,7 @@ public class StandServiceImpl implements StandService {
     }
 
     @Override
-    public void AddStand(AddStandRequest request, UUID teamId, UUID userId) throws NoAccessException {
+    public void addStand(AddStandRequest request, UUID teamId, UUID userId) throws NoAccessException {
         var team = teamRepository.findById(teamId);
         if (!userTeamAccessRepository.existsByUserIdAndTeamId(userId, teamId) || team.isEmpty()) {
             throw new NoAccessException(MessageFormat.format("User with id {0} has no access to team with id {1}", userId, teamId));
@@ -56,7 +56,7 @@ public class StandServiceImpl implements StandService {
     }
 
     @Override
-    public void BookStand(BookStandRequest request, UUID standId, UUID userId) throws NoAccessException,
+    public void bookStand(BookStandRequest request, UUID standId, UUID userId) throws NoAccessException,
             UserNotFoundException,
             NotSuchTimeException, StandNotFoundException {
         var stand = standRepository.findById(standId);
@@ -99,7 +99,7 @@ public class StandServiceImpl implements StandService {
     }
 
     @Override
-    public void DeleteBookStand(UUID standId, long bookingId, UUID userId)
+    public void deleteBookStand(UUID standId, long bookingId, UUID userId)
             throws StandNotFoundException, NoAccessException, BookingNotFoundException {
         var stand = standRepository.findById(standId);
 

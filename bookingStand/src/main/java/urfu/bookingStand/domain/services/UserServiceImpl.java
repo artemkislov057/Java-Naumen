@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void RegisterUser(RegisterUserRequest request) throws ObjectRecreationException {
+    public void registerUser(RegisterUserRequest request) throws ObjectRecreationException {
         if (userRepository.existsByShortname(request.getShortName())) {
             throw new ObjectRecreationException(MessageFormat.format("Пользователь {0} уже зарегистрирован!", request.getShortName()));
         }

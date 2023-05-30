@@ -35,32 +35,32 @@ public class StandController {
 
     @PostMapping("api/teams/{teamId}/stands")
     @ResponseBody
-    public void AddStand(@RequestBody AddStandDto body, @PathVariable UUID teamId, Authentication authentication) throws NoAccessException {
+    public void addStand(@RequestBody AddStandDto body, @PathVariable UUID teamId, Authentication authentication) throws NoAccessException {
         var user = (BookingUserDetails) authentication.getPrincipal();
         var request = modelMapper.map(body, AddStandRequest.class);
-        standService.AddStand(request, teamId, user.getId());
+        standService.addStand(request, teamId, user.getId());
     }
 
     @PostMapping("api/stands/{standId}/book")
     @ResponseBody
-    public void BookStand(@RequestBody BookStandDto body, @PathVariable UUID standId, Authentication authentication)
+    public void bookStand(@RequestBody BookStandDto body, @PathVariable UUID standId, Authentication authentication)
             throws NoAccessException,
             UserNotFoundException,
             NotSuchTimeException,
             StandNotFoundException {
         var user = (BookingUserDetails) authentication.getPrincipal();
         var request = modelMapper.map(body, BookStandRequest.class);
-        standService.BookStand(request, standId, user.getId());
+        standService.bookStand(request, standId, user.getId());
     }
 
     @DeleteMapping("api/stands/{standId}/bookings/{bookingId}")
     @ResponseBody
-    public void DeleteBookStand(@PathVariable UUID standId, @PathVariable long bookingId, Authentication authentication)
+    public void deleteBookStand(@PathVariable UUID standId, @PathVariable long bookingId, Authentication authentication)
             throws NoAccessException,
             UserNotFoundException,
             StandNotFoundException, BookingNotFoundException {
         var user = (BookingUserDetails) authentication.getPrincipal();
-        standService.DeleteBookStand(standId, bookingId, user.getId());
+        standService.deleteBookStand(standId, bookingId, user.getId());
     }
 
     @GetMapping("api/teams/{teamId}/stands")
