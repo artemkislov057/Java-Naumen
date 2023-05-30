@@ -1,7 +1,6 @@
 package urfu.bookingStand.domain.models.report;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 public class TeamStandReportModel {
     private LocalDateTime startDate;

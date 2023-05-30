@@ -11,6 +11,7 @@ import urfu.bookingStand.database.repositories.TeamRepository;
 import urfu.bookingStand.database.repositories.UserTeamAccessRepository;
 import urfu.bookingStand.domain.abstractions.ReportService;
 import urfu.bookingStand.domain.abstractions.TeamService;
+import urfu.bookingStand.domain.exceptions.DomainExceptionBase;
 import urfu.bookingStand.domain.exceptions.NoAccessException;
 import urfu.bookingStand.domain.exceptions.ObjectRecreationException;
 import urfu.bookingStand.domain.requests.AddTeamRequest;
@@ -45,7 +46,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public void AddTeam(AddTeamRequest request, UUID userId) {
+    public void addTeam(AddTeamRequest request, UUID userId) {
         var team = modelMapper.map(request, Team.class);
         teamRepository.save(team);
         var userTeamAccess = new UserTeamAccess();
@@ -66,7 +67,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public void inviteUserToTeam(UUID userId, UUID userToAddId, UUID teamId) throws NoAccessException, ObjectRecreationException {
+    public void inviteUserToTeam(UUID userId, UUID userToAddId, UUID teamId) throws DomainExceptionBase {
         var userTeamAccess = userTeamAccessRepository.findByUserIdAndTeamId(userId, teamId);
         if (userTeamAccess.isEmpty()) {
             throw new NoAccessException(MessageFormat.format("User with id {0} has no access to team with id {1}", userId, teamId));
@@ -96,7 +97,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public void acceptInvitationToTeam(UUID userId, UUID teamId) throws NoAccessException {
+    public void acceptInvitationToTeam(UUID userId, UUID teamId) throws DomainExceptionBase {
         var hasUserAccessToTeam = userTeamAccessRepository.existsByUserIdAndTeamId(userId, teamId);
         if (hasUserAccessToTeam) {
             return;
@@ -127,7 +128,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public void createReportForTeamByDate(UUID userId, UUID teamId, Date reportDate) throws NoAccessException {
+    public void createReportForTeamByDate(UUID userId, UUID teamId, Date reportDate) throws DomainExceptionBase {
         var hasUserAccessToTeam = userTeamAccessRepository.existsByUserIdAndTeamId(userId, teamId);
         if (!hasUserAccessToTeam) {
             throw new NoAccessException(MessageFormat.format("User with id {0} has no invitation to team {1}", userId, teamId));

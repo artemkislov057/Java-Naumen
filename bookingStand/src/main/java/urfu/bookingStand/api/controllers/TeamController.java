@@ -11,8 +11,7 @@ import urfu.bookingStand.api.dto.team.InviteUserToTeamDto;
 import urfu.bookingStand.api.dto.team.TeamByUserIdDto;
 import urfu.bookingStand.api.dto.team.TeamInvitationDto;
 import urfu.bookingStand.domain.abstractions.TeamService;
-import urfu.bookingStand.domain.exceptions.NoAccessException;
-import urfu.bookingStand.domain.exceptions.ObjectRecreationException;
+import urfu.bookingStand.domain.exceptions.DomainExceptionBase;
 import urfu.bookingStand.domain.models.BookingUserDetails;
 import urfu.bookingStand.domain.requests.AddTeamRequest;
 import urfu.bookingStand.domain.responses.TeamByUserIdResponse;
@@ -40,12 +39,12 @@ public class TeamController {
     public void AddTeam(@RequestBody AddTeamDto body, Authentication authentication) {
         var user = (BookingUserDetails) authentication.getPrincipal();
         var request = modelMapper.map(body, AddTeamRequest.class);
-        teamService.AddTeam(request, user.getId());
+        teamService.addTeam(request, user.getId());
     }
 
     @GetMapping("api/teams")
     @ResponseBody
-    public List<TeamByUserIdDto> GetTeams(Authentication authentication) {
+    public List<TeamByUserIdDto> getTeams(Authentication authentication) {
         var user = (BookingUserDetails) authentication.getPrincipal();
         var teams = teamService.getTeamsByUserId(user.getId());
         var result = new ArrayList<TeamByUserIdDto>();
@@ -58,9 +57,9 @@ public class TeamController {
 
     @PostMapping("api/teams/{teamId}/invite")
     @ResponseBody
-    public void InviteUserToTeam(@PathVariable UUID teamId,
+    public void inviteUserToTeam(@PathVariable UUID teamId,
                                  @RequestBody InviteUserToTeamDto body,
-                                 Authentication authentication) throws NoAccessException, ObjectRecreationException {
+                                 Authentication authentication) throws DomainExceptionBase {
         var user = (BookingUserDetails) authentication.getPrincipal();
         teamService.inviteUserToTeam(user.getId(), body.getUserId(), teamId);
     }
@@ -80,14 +79,14 @@ public class TeamController {
 
     @PostMapping("api/teams/{teamId}/accept-invitation")
     @ResponseBody
-    public void AcceptInvitation(@PathVariable UUID teamId, Authentication authentication) throws NoAccessException {
+    public void acceptInvitation(@PathVariable UUID teamId, Authentication authentication) throws DomainExceptionBase {
         var user = (BookingUserDetails) authentication.getPrincipal();
         teamService.acceptInvitationToTeam(user.getId(), teamId);
     }
 
     @PostMapping("api/teams/{teamId}/reject-invitation")
     @ResponseBody
-    public void RejectInvitation(@PathVariable UUID teamId, Authentication authentication) {
+    public void rejectInvitation(@PathVariable UUID teamId, Authentication authentication) {
         var user = (BookingUserDetails) authentication.getPrincipal();
         teamService.rejectInvitationToTeam(user.getId(), teamId);
     }
@@ -96,7 +95,7 @@ public class TeamController {
     @ResponseBody
     public void createReportForTeamByDate(@PathVariable UUID teamId,
                                           @RequestParam("report-date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date reportDate,
-                                          Authentication authentication) throws NoAccessException {
+                                          Authentication authentication) throws DomainExceptionBase {
         var user = (BookingUserDetails) authentication.getPrincipal();
         teamService.createReportForTeamByDate(user.getId(), teamId, reportDate);
     }
