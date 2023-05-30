@@ -1,5 +1,6 @@
 package urfu.bookingStand.domain.services;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -15,10 +16,12 @@ import urfu.bookingStand.domain.exceptions.DomainExceptionBase;
 import urfu.bookingStand.domain.exceptions.ObjectRecreationException;
 import urfu.bookingStand.domain.models.BookingUserDetails;
 import urfu.bookingStand.domain.requests.RegisterUserRequest;
+import urfu.bookingStand.domain.responses.UserResponse;
 
 import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,6 +29,9 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
@@ -47,17 +53,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Optional<UserResponse> findByLogin(String login) {
+        var user = userRepository.findByShortname(login);
+        if (user.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(modelMapper.map(user.get(), UserResponse.class));
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         var userFromDatabase = userRepository.findByShortname(username);
-        if (userFromDatabase == null) {
+        if (userFromDatabase.isEmpty()) {
             throw new UsernameNotFoundException(MessageFormat.format("Пользователь {0} не найден!", username));
         }
 
+        var notNullUserFromDatabase = userFromDatabase.get();
+
         return new BookingUserDetails(
-                userFromDatabase.getId(),
-                userFromDatabase.getShortname(),
-                userFromDatabase.getPassword(),
-                mapRolesToAuthorities(userFromDatabase.getRoles())
+                notNullUserFromDatabase.getId(),
+                notNullUserFromDatabase.getShortname(),
+                notNullUserFromDatabase.getPassword(),
+                mapRolesToAuthorities(notNullUserFromDatabase.getRoles())
         );
     }
 
