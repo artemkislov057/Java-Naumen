@@ -35,7 +35,7 @@ public class StandController {
 
     @PostMapping("api/teams/{teamId}/stands")
     @ResponseBody
-    public void addStand(@RequestBody AddStandDto body, @PathVariable UUID teamId, Authentication authentication) throws NoAccessException {
+    public void addStand(@RequestBody AddStandDto body, @PathVariable UUID teamId, Authentication authentication) throws DomainExceptionBase {
         var user = (BookingUserDetails) authentication.getPrincipal();
         var request = modelMapper.map(body, AddStandRequest.class);
         standService.addStand(request, teamId, user.getId());
@@ -44,10 +44,7 @@ public class StandController {
     @PostMapping("api/stands/{standId}/book")
     @ResponseBody
     public void bookStand(@RequestBody BookStandDto body, @PathVariable UUID standId, Authentication authentication)
-            throws NoAccessException,
-            UserNotFoundException,
-            NotSuchTimeException,
-            StandNotFoundException {
+            throws DomainExceptionBase {
         var user = (BookingUserDetails) authentication.getPrincipal();
         var request = modelMapper.map(body, BookStandRequest.class);
         standService.bookStand(request, standId, user.getId());
@@ -56,16 +53,14 @@ public class StandController {
     @DeleteMapping("api/stands/{standId}/bookings/{bookingId}")
     @ResponseBody
     public void deleteBookStand(@PathVariable UUID standId, @PathVariable long bookingId, Authentication authentication)
-            throws NoAccessException,
-            UserNotFoundException,
-            StandNotFoundException, BookingNotFoundException {
+            throws DomainExceptionBase {
         var user = (BookingUserDetails) authentication.getPrincipal();
         standService.deleteBookStand(standId, bookingId, user.getId());
     }
 
     @GetMapping("api/teams/{teamId}/stands")
     @ResponseBody
-    public List<StandByTeamIdDto> getStandByTeamId(@PathVariable UUID teamId) throws TeamNotFoundException {
+    public List<StandByTeamIdDto> getStandByTeamId(@PathVariable UUID teamId) throws DomainExceptionBase {
         var standsByTeamIdResponse = standService.getStandByTeamId(teamId);
 
         var standsDto = new ArrayList<StandByTeamIdDto>();
@@ -80,7 +75,7 @@ public class StandController {
     @ResponseBody
     public List<StandEmploymentDto> getStandEmploymentByTimePeriod(@PathVariable UUID standId,
                                                                    @RequestParam("from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
-                                                                   @RequestParam("to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to) throws StandNotFoundException {
+                                                                   @RequestParam("to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to) throws DomainExceptionBase {
        var standEmploymentResponse = standService.getStandEmploymentByTimePeriod(standId, from, to);
 
        var standsEmploymentDto = new ArrayList<StandEmploymentDto>();

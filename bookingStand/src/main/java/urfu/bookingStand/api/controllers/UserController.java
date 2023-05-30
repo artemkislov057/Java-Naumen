@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import urfu.bookingStand.api.dto.user.RegisterUserDto;
 import urfu.bookingStand.domain.abstractions.UserService;
-import urfu.bookingStand.domain.exceptions.ObjectRecreationException;
+import urfu.bookingStand.domain.exceptions.DomainExceptionBase;
 import urfu.bookingStand.domain.requests.RegisterUserRequest;
 
 @Controller
@@ -25,7 +25,7 @@ public class UserController {
 
     @PostMapping("api/users")
     @ResponseBody
-    public void registerUser(@Valid RegisterUserDto body) throws ObjectRecreationException {
+    public void registerUser(@Valid RegisterUserDto body) throws DomainExceptionBase {
         var request = modelMapper.map(body, RegisterUserRequest.class);
         userService.registerUser(request);
     }

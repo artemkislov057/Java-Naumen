@@ -1,7 +1,6 @@
 package urfu.bookingStand.domain.abstractions;
 
-import urfu.bookingStand.domain.exceptions.NoAccessException;
-import urfu.bookingStand.domain.exceptions.ObjectRecreationException;
+import urfu.bookingStand.domain.exceptions.DomainExceptionBase;
 import urfu.bookingStand.domain.requests.AddTeamRequest;
 import urfu.bookingStand.domain.responses.TeamByUserIdResponse;
 import urfu.bookingStand.domain.responses.TeamInvitationResponse;
@@ -15,13 +14,13 @@ public interface TeamService {
 
     List<TeamByUserIdResponse> getTeamsByUserId(UUID userId);
 
-    void inviteUserToTeam(UUID userId, UUID userToAddId, UUID teamId) throws NoAccessException, ObjectRecreationException;
+    void inviteUserToTeam(UUID userId, UUID userToAddId, UUID teamId) throws DomainExceptionBase;
 
     List<TeamInvitationResponse> getUserInvitations(UUID userId);
 
-    void acceptInvitationToTeam(UUID userId, UUID teamId) throws NoAccessException;
+    void acceptInvitationToTeam(UUID userId, UUID teamId) throws DomainExceptionBase;
 
     void rejectInvitationToTeam(UUID userId, UUID teamId);
 
-    void createReportForTeamByDate(UUID userId, UUID teamId, Date reportDate) throws NoAccessException;
+    void createReportForTeamByDate(UUID userId, UUID teamId, Date reportDate) throws DomainExceptionBase;
 }

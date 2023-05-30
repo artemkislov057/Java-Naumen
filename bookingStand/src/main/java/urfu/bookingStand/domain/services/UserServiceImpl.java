@@ -11,6 +11,7 @@ import urfu.bookingStand.database.entities.User;
 import urfu.bookingStand.database.enums.Role;
 import urfu.bookingStand.database.repositories.UserRepository;
 import urfu.bookingStand.domain.abstractions.UserService;
+import urfu.bookingStand.domain.exceptions.DomainExceptionBase;
 import urfu.bookingStand.domain.exceptions.ObjectRecreationException;
 import urfu.bookingStand.domain.models.BookingUserDetails;
 import urfu.bookingStand.domain.requests.RegisterUserRequest;
@@ -33,7 +34,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void registerUser(RegisterUserRequest request) throws ObjectRecreationException {
+    public void registerUser(RegisterUserRequest request) throws DomainExceptionBase {
         if (userRepository.existsByShortname(request.getShortName())) {
             throw new ObjectRecreationException(MessageFormat.format("Пользователь {0} уже зарегистрирован!", request.getShortName()));
         }
